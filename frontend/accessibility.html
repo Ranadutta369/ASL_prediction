@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign0 - Accessibility Guide</title>
+  <meta name="description" content="Assistive technology and accessibility controls for Sign0. High-contrast mode, dyslexia-friendly fonts, large touch targets, and guides for speech-impaired learners and educators." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">
+      <span class="icon">ASL</span>
+      <a href="index.html" class="brand" style="text-decoration:none;color:inherit">Sign<span class="highlight">0</span></a>
+      <span class="badge-tag">Accessibility Suite</span>
+    </div>
+
+    <nav class="nav-links">
+      <a href="home.html" class="nav-link">Home</a>
+      <a href="index.html" class="nav-link">Recognizer</a>
+      <a href="dictionary.html" class="nav-link">ASL Dictionary</a>
+      <a href="generator.html" class="nav-link">Sign Synthesizer</a>
+      <a href="accessibility.html" class="nav-link active">Accessibility Guide</a>
+    </nav>
+  </header>
+
+  <main class="page-container">
+    <div class="page-header">
+      <h1 class="page-title">Assistive Technology & Accessibility Guide</h1>
+      <p class="page-subtitle">Controls and learning guidance for speech-impaired learners, educators, children, and users with different visual or motor needs.</p>
+    </div>
+
+    <div class="card access-card">
+      <h2 class="card-title">Accessibility Preferences</h2>
+
+      <div class="access-toggles-grid">
+        <div class="access-option">
+          <div class="opt-info">
+            <span class="opt-title">High Contrast Mode</span>
+            <span class="opt-desc">Improves text visibility and hand landmark contrast.</span>
+          </div>
+          <button id="contrastToggle" class="btn-sm btn-accent" type="button">Toggle High Contrast</button>
+        </div>
+
+        <div class="access-option">
+          <div class="opt-info">
+            <span class="opt-title">Dyslexia-Friendly Font</span>
+            <span class="opt-desc">Switches the interface to a simpler fallback font stack.</span>
+          </div>
+          <button id="fontToggle" class="btn-sm btn-action" type="button">Toggle Dyslexia Font</button>
+        </div>
+
+        <div class="access-option">
+          <div class="opt-info">
+            <span class="opt-title">Large Touch Targets</span>
+            <span class="opt-desc">Increases button size for touch, children, and motor accessibility.</span>
+          </div>
+          <button id="targetToggle" class="btn-sm btn-action" type="button">Toggle Large Buttons</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="access-guides-grid">
+      <div class="card guide-card">
+        <h3 class="guide-title">For Speech-Impaired Users</h3>
+        <ul class="guide-list">
+          <li><strong>Real-time voice output:</strong> Converts stable recognized letters into spoken audio.</li>
+          <li><strong>Sentence builder:</strong> Builds words and sentences from recognized signs.</li>
+          <li><strong>Text-to-sign player:</strong> Converts selected prompts into 3D hand landmark animations.</li>
+        </ul>
+      </div>
+
+      <div class="card guide-card">
+        <h3 class="guide-title">For Learners and Educators</h3>
+        <ul class="guide-list">
+          <li><strong>Visual feedback:</strong> Shows hand joints and connections over the camera feed.</li>
+          <li><strong>ASL dictionary:</strong> Provides simple instructions for letters, phrases, and numbers.</li>
+          <li><strong>Top candidates:</strong> Shows alternatives when a hand shape is partially formed.</li>
+        </ul>
+      </div>
+
+      <div class="card guide-card">
+        <h3 class="guide-title">AI System Overview</h3>
+        <ul class="guide-list">
+          <li><strong>Normalized landmarks:</strong> Hand points are centered on the wrist and scale-normalized.</li>
+          <li><strong>Letter classifier:</strong> The backend predicts A-Z letters from 63 landmark values.</li>
+          <li><strong>Sign synthesizer:</strong> The generator renders precomputed 3D landmark trajectories.</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById("contrastToggle").addEventListener("click", () => {
+      document.body.classList.toggle("high-contrast");
+    });
+
+    document.getElementById("fontToggle").addEventListener("click", () => {
+      document.body.classList.toggle("dyslexic-font");
+    });
+
+    document.getElementById("targetToggle").addEventListener("click", () => {
+      document.body.classList.toggle("large-targets");
+    });
+  </script>
+</body>
+</html>

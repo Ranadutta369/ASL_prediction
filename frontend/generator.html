@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign0 - AI Text-to-Sign Synthesizer</title>
+  <meta name="description" content="AI-powered text-to-sign language synthesizer. Type a word or phrase to generate 3D hand keypoint gesture animations using a denoising diffusion probabilistic model." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">
+      <span class="icon">ASL</span>
+      <a href="index.html" class="brand" style="text-decoration:none;color:inherit">Sign<span class="highlight">0</span></a>
+      <span class="badge-tag">Sign Synthesizer</span>
+    </div>
+
+    <nav class="nav-links">
+      <a href="home.html" class="nav-link">Home</a>
+      <a href="index.html" class="nav-link">Recognizer</a>
+      <a href="dictionary.html" class="nav-link">ASL Dictionary</a>
+      <a href="generator.html" class="nav-link active">Sign Synthesizer</a>
+      <a href="accessibility.html" class="nav-link">Accessibility Guide</a>
+    </nav>
+  </header>
+
+  <main class="page-container">
+    <div class="page-header">
+      <h1 class="page-title">AI Text-to-Sign Synthesizer</h1>
+      <p class="page-subtitle">Type a word or phrase and view a 3D landmark animation generated from the backend sign library.</p>
+    </div>
+
+    <div class="generator-grid">
+      <div class="card generator-input-card">
+        <h2 class="card-title">Prompt Input</h2>
+
+        <div class="input-group">
+          <label for="promptInput" class="input-label">Text to synthesize</label>
+          <input type="text" id="promptInput" class="prompt-field" placeholder="Example: Hello, Thank You, Water, Help, Yes" value="Hello" />
+        </div>
+
+        <div class="prompt-chips" aria-label="Suggested prompts">
+          <button type="button" class="chip" data-prompt="Hello">Hello</button>
+          <button type="button" class="chip" data-prompt="Thank You">Thank You</button>
+          <button type="button" class="chip" data-prompt="Water">Water</button>
+          <button type="button" class="chip" data-prompt="Help">Help</button>
+          <button type="button" class="chip" data-prompt="Please">Please</button>
+          <button type="button" class="chip" data-prompt="Yes">Yes</button>
+          <button type="button" class="chip" data-prompt="No">No</button>
+          <button type="button" class="chip" data-prompt="I Love You">I Love You</button>
+          <button type="button" class="chip" data-prompt="Goodbye">Goodbye</button>
+          <button type="button" class="chip" data-prompt="Eat">Eat</button>
+        </div>
+
+        <button id="generateBtn" class="btn-generate">Generate 3D Sign Animation</button>
+
+        <div class="model-info-box">
+          <span class="info-tag">Model: 3D Landmark Synthesizer</span>
+          <p class="info-desc">Renders frame-by-frame hand keypoints with 20 frames, 21 joints, and 3 coordinates per joint.</p>
+        </div>
+      </div>
+
+      <div class="card generator-player-card">
+        <div class="player-header">
+          <h2 class="card-title">3D Keypoint Gesture Animation</h2>
+          <span id="playerStatus" class="player-status">Ready</span>
+        </div>
+
+        <div class="player-canvas-container">
+          <canvas id="animCanvas" width="600" height="450"></canvas>
+        </div>
+
+        <div class="player-controls">
+          <button id="playPauseBtn" class="btn-control">Play Animation</button>
+          <button id="loopBtn" class="btn-control active">Loop: ON</button>
+          <div class="speed-control">
+            <span class="speed-label">Speed:</span>
+            <select id="speedSelect" class="speed-dropdown">
+              <option value="0.5">0.5x Slow</option>
+              <option value="1.0" selected>1.0x Normal</option>
+              <option value="1.5">1.5x Fast</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="generator.js"></script>
+</body>
+</html>

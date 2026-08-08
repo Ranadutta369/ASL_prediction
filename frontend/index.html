@@ -2,27 +2,151 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>ASL Alphabet Recognition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign0 - AI-Powered ASL Recognition</title>
+  <meta name="description" content="Real-time AI-powered American Sign Language recognition using MediaPipe hand tracking and deep learning. Recognizes A-Z letters with webcam, builds sentences, and speaks translations aloud." />
 
-  <!-- MediaPipe -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
 
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <header class="navbar">
+    <div class="logo">
+      <span class="icon">ASL</span>
+      <a href="home.html" class="brand" style="text-decoration:none;color:inherit">Sign<span class="highlight">0</span></a>
+      <span class="badge-tag">AI Engine 3.0</span>
+    </div>
 
-  <h1>ASL Alphabet Recognition</h1>
+    <nav class="nav-links">
+      <a href="home.html" class="nav-link">Home</a>
+      <a href="index.html" class="nav-link active">Recognizer</a>
+      <a href="dictionary.html" class="nav-link">ASL Dictionary</a>
+      <a href="generator.html" class="nav-link">Sign Synthesizer</a>
+      <a href="accessibility.html" class="nav-link">Accessibility Guide</a>
+    </nav>
 
-  <div class="container">
-    <video id="video" autoplay playsinline></video>
-    <canvas id="canvas"></canvas>
-  </div>
+    <div class="status-container">
+      <div id="statusDot" class="status-dot dot-yellow"></div>
+      <span id="statusText" class="status-text">Initializing MediaPipe...</span>
+    </div>
 
-  <div class="output">
-    <div id="letter">-</div>
-    <div id="confidence">Confidence: -</div>
+    <div class="header-controls">
+      <button id="ttsToggle" class="btn-icon active" title="Toggle speech audio">Speech ON</button>
+      <button id="dictToggleBtn" class="btn-icon" title="Open ASL dictionary">Dictionary</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <section class="video-section">
+      <div class="video-card">
+        <div class="canvas-wrapper">
+          <video id="video" autoplay playsinline muted></video>
+          <canvas id="canvas" width="640" height="480"></canvas>
+          <div id="videoOverlay" class="video-overlay">
+            <span class="spinner"></span>
+            <span class="overlay-msg">Starting camera feed...</span>
+          </div>
+        </div>
+
+        <div class="video-controls">
+          <div class="info-pill">
+            <span class="label">Model Mode:</span>
+            <select id="modelModeSelect" class="speed-dropdown" style="padding: 2px 6px; font-size: 11px; margin: 0;">
+              <option value="mlp" selected>Static MLP (Fast)</option>
+              <option value="transformer">Transformer (Sequence)</option>
+            </select>
+          </div>
+          <div class="info-pill">
+            <span class="label">Backend:</span>
+            <span id="backendPill" class="val text-blue">Checking API...</span>
+          </div>
+          <div class="info-pill">
+            <span class="label">Latency:</span>
+            <span id="latencyPill" class="val">-</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dashboard-section">
+      <div class="card prediction-card">
+        <h2 class="card-title">Real-Time Recognition</h2>
+
+        <div class="prediction-body">
+          <div class="letter-display-box">
+            <span id="predictedLetter" class="huge-letter">-</span>
+            <span id="handStateLabel" class="hand-state">Waiting for hand...</span>
+          </div>
+
+          <div class="metrics-panel">
+            <div class="confidence-header">
+              <span class="metric-label">Confidence Score</span>
+              <span id="confidencePercent" class="metric-val">0%</span>
+            </div>
+
+            <div class="progress-bar-track">
+              <div id="confidenceBar" class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+
+            <div class="top3-container">
+              <span class="top3-title">Top Candidates</span>
+              <div id="top3List" class="top3-list">
+                <div class="top3-item"><span class="lbl">-</span><span class="prob">-</span></div>
+                <div class="top3-item"><span class="lbl">-</span><span class="prob">-</span></div>
+                <div class="top3-item"><span class="lbl">-</span><span class="prob">-</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card word-builder-card">
+        <div class="card-header-flex">
+          <h2 class="card-title">Sentence Builder</h2>
+          <button id="addLetterBtn" class="btn-sm btn-accent">Append Letter</button>
+        </div>
+
+        <div id="sentenceDisplay" class="sentence-box" placeholder="Your translated sign text will appear here..."></div>
+
+        <div class="builder-actions">
+          <button id="spaceBtn" class="btn-action">Space</button>
+          <button id="backspaceBtn" class="btn-action">Delete</button>
+          <button id="clearBtn" class="btn-action btn-danger">Clear All</button>
+          <button id="speakSentenceBtn" class="btn-action btn-primary">Speak Text</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="dictModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h2>ASL Visual Dictionary & Guide</h2>
+          <p>Interactive sign language learning for speech-impaired individuals and children.</p>
+        </div>
+        <button id="closeDictBtn" class="close-btn" title="Close dictionary">&times;</button>
+      </div>
+
+      <div class="dict-filters">
+        <button class="filter-btn active" data-category="alphabets">Alphabets (A-Z)</button>
+        <button class="filter-btn" data-category="phrases">Daily Phrases</button>
+        <button class="filter-btn" data-category="numbers">Numbers (1-10)</button>
+      </div>
+
+      <div class="dict-search-box">
+        <input type="text" id="dictSearchInput" placeholder="Search letter, sign name, or phrase..." />
+      </div>
+
+      <div id="dictCardsGrid" class="dict-grid"></div>
+    </div>
   </div>
 
   <script src="script.js"></script>

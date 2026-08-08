@@ -1,0 +1,3 @@
+[submodule "sign0-frontend"]
+	path = sign0-frontend
+	url = https://github.com/Ranadutta369/Sign0.git

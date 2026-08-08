@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign0 - ASL Interactive Learning Dictionary</title>
+  <meta name="description" content="Interactive ASL visual dictionary and learning hub. Browse alphabets A-Z, daily phrases, and numbers 1-10 with text descriptions and audio pronunciation." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">
+      <span class="icon">ASL</span>
+      <a href="index.html" class="brand" style="text-decoration:none;color:inherit">Sign<span class="highlight">0</span></a>
+      <span class="badge-tag">Learning Hub</span>
+    </div>
+
+    <nav class="nav-links">
+      <a href="home.html" class="nav-link">Home</a>
+      <a href="index.html" class="nav-link">Recognizer</a>
+      <a href="dictionary.html" class="nav-link active">ASL Dictionary</a>
+      <a href="generator.html" class="nav-link">Sign Synthesizer</a>
+      <a href="accessibility.html" class="nav-link">Accessibility Guide</a>
+    </nav>
+  </header>
+
+  <main class="page-container">
+    <div class="page-header">
+      <h1 class="page-title">Interactive ASL Visual Dictionary</h1>
+      <p class="page-subtitle">A learning hub for ASL letters, daily phrases, and numbers with speech playback.</p>
+    </div>
+
+    <div class="dict-control-panel">
+      <div class="dict-filters">
+        <button class="filter-btn active" data-category="alphabets">Alphabets (A-Z)</button>
+        <button class="filter-btn" data-category="phrases">Daily Phrases</button>
+        <button class="filter-btn" data-category="numbers">Numbers (1-10)</button>
+      </div>
+
+      <div class="dict-search-box">
+        <input type="text" id="dictSearchInput" placeholder="Search letter, phrase, or gesture description..." />
+      </div>
+    </div>
+
+    <div id="dictCardsGrid" class="dict-grid-page"></div>
+  </main>
+
+  <script>
+    const ASL_DICTIONARY_DATA = [
+      { title: "A", category: "alphabets", badge: "Letter A", desc: "Form a fist with your thumb resting against the side of your index finger." },
+      { title: "B", category: "alphabets", badge: "Letter B", desc: "Open palm facing forward with four fingers extended upward and thumb tucked across the palm." },
+      { title: "C", category: "alphabets", badge: "Letter C", desc: "Curve all fingers and thumb to form a C shape." },
+      { title: "D", category: "alphabets", badge: "Letter D", desc: "Point your index finger up while your thumb touches the other fingertips." },
+      { title: "E", category: "alphabets", badge: "Letter E", desc: "Curl all four fingers down so their tips touch the top edge of your thumb." },
+      { title: "F", category: "alphabets", badge: "Letter F", desc: "Touch index finger to thumb tip to form a circle while the other fingers point upward." },
+      { title: "G", category: "alphabets", badge: "Letter G", desc: "Extend index finger and thumb horizontally, parallel to each other." },
+      { title: "H", category: "alphabets", badge: "Letter H", desc: "Extend index and middle fingers horizontally side by side." },
+      { title: "I", category: "alphabets", badge: "Letter I", desc: "Extend your pinky finger while keeping the other fingers folded." },
+      { title: "J", category: "alphabets", badge: "Letter J", desc: "Extend your pinky finger and draw a J shape in the air." },
+      { title: "K", category: "alphabets", badge: "Letter K", desc: "Point index finger up, middle finger forward, and place thumb between them." },
+      { title: "L", category: "alphabets", badge: "Letter L", desc: "Extend index finger up and thumb outward to form an L shape." },
+      { title: "M", category: "alphabets", badge: "Letter M", desc: "Tuck your thumb beneath the first three fingers." },
+      { title: "N", category: "alphabets", badge: "Letter N", desc: "Tuck your thumb beneath the first two fingers." },
+      { title: "O", category: "alphabets", badge: "Letter O", desc: "Touch all fingertips to the thumb to form an O shape." },
+      { title: "P", category: "alphabets", badge: "Letter P", desc: "Use a downward-pointing K handshape." },
+      { title: "Q", category: "alphabets", badge: "Letter Q", desc: "Use a downward-pointing G handshape." },
+      { title: "R", category: "alphabets", badge: "Letter R", desc: "Cross your index finger over your middle finger." },
+      { title: "S", category: "alphabets", badge: "Letter S", desc: "Make a fist with your thumb folded across the front of your fingers." },
+      { title: "T", category: "alphabets", badge: "Letter T", desc: "Tuck your thumb between your index and middle fingers inside a fist." },
+      { title: "U", category: "alphabets", badge: "Letter U", desc: "Extend index and middle fingers straight up held together." },
+      { title: "V", category: "alphabets", badge: "Letter V", desc: "Extend index and middle fingers upward and spread apart." },
+      { title: "W", category: "alphabets", badge: "Letter W", desc: "Extend index, middle, and ring fingers upward." },
+      { title: "X", category: "alphabets", badge: "Letter X", desc: "Bend your index finger into a hook with the other fingers folded." },
+      { title: "Y", category: "alphabets", badge: "Letter Y", desc: "Extend thumb and pinky while keeping the middle three fingers folded." },
+      { title: "Z", category: "alphabets", badge: "Letter Z", desc: "Use your index finger to trace the letter Z in the air." },
+      { title: "Hello", category: "phrases", badge: "Greeting", desc: "Place your open hand near your forehead and move it outward." },
+      { title: "Thank You", category: "phrases", badge: "Politeness", desc: "Touch fingertips to chin or lips, then move your hand forward." },
+      { title: "Please", category: "phrases", badge: "Politeness", desc: "Rub your open palm in a circular motion over your chest." },
+      { title: "Yes", category: "phrases", badge: "Basic Word", desc: "Make a fist and nod it up and down." },
+      { title: "No", category: "phrases", badge: "Basic Word", desc: "Tap index and middle fingers against your thumb." },
+      { title: "Help", category: "phrases", badge: "Emergency", desc: "Place a thumbs-up fist on your opposite flat palm and lift both hands." },
+      { title: "I Love You", category: "phrases", badge: "Expression", desc: "Extend thumb, index finger, and pinky finger together." },
+      { title: "Water", category: "phrases", badge: "Daily Need", desc: "Make a W handshape and tap near your chin." },
+      { title: "Eat / Food", category: "phrases", badge: "Daily Need", desc: "Gather fingertips to thumb and tap against your lips." },
+      { title: "1", category: "numbers", badge: "Number 1", desc: "Extend index finger straight up." },
+      { title: "2", category: "numbers", badge: "Number 2", desc: "Extend index and middle fingers." },
+      { title: "3", category: "numbers", badge: "Number 3", desc: "Extend thumb, index, and middle fingers." },
+      { title: "4", category: "numbers", badge: "Number 4", desc: "Extend four fingers upward with thumb tucked." },
+      { title: "5", category: "numbers", badge: "Number 5", desc: "Open palm with all five fingers extended." },
+      { title: "6", category: "numbers", badge: "Number 6", desc: "Touch pinky finger to thumb with the other fingers up." },
+      { title: "7", category: "numbers", badge: "Number 7", desc: "Touch ring finger to thumb with the other fingers up." },
+      { title: "8", category: "numbers", badge: "Number 8", desc: "Touch middle finger to thumb with the other fingers up." },
+      { title: "9", category: "numbers", badge: "Number 9", desc: "Touch index finger to thumb with the other fingers up." },
+      { title: "10", category: "numbers", badge: "Number 10", desc: "Make a thumbs-up fist and shake it gently side to side." }
+    ];
+
+    let currentCategory = "alphabets";
+    const gridEl = document.getElementById("dictCardsGrid");
+    const searchEl = document.getElementById("dictSearchInput");
+    const filterBtns = document.querySelectorAll(".filter-btn");
+
+    function renderCards() {
+      const q = searchEl.value.toLowerCase().trim();
+      const items = ASL_DICTIONARY_DATA.filter((item) =>
+        item.category === currentCategory &&
+        (item.title.toLowerCase().includes(q) ||
+          item.desc.toLowerCase().includes(q) ||
+          item.badge.toLowerCase().includes(q))
+      );
+
+      if (items.length === 0) {
+        gridEl.innerHTML = '<div class="empty-state">No matching entries found.</div>';
+        return;
+      }
+
+      gridEl.innerHTML = items.map((item) => `
+        <div class="dict-item-card">
+          <div class="dict-card-top">
+            <span class="dict-card-title">${item.title}</span>
+            <span class="dict-card-badge">${item.badge}</span>
+          </div>
+          <p class="dict-card-desc">${item.desc}</p>
+          <div class="dict-card-footer">
+            <button class="dict-btn-speak" type="button" data-speak="${escapeHtml(`${item.title}: ${item.desc}`)}">
+              Hear Pronunciation
+            </button>
+          </div>
+        </div>
+      `).join("");
+
+      document.querySelectorAll("[data-speak]").forEach((btn) => {
+        btn.addEventListener("click", () => speakText(btn.dataset.speak));
+      });
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
+    }
+
+    function speakText(text) {
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    filterBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        filterBtns.forEach((item) => item.classList.remove("active"));
+        btn.classList.add("active");
+        currentCategory = btn.dataset.category;
+        renderCards();
+      });
+    });
+
+    searchEl.addEventListener("input", renderCards);
+    renderCards();
+  </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "top1_accuracy": 1.0,
+  "top3_accuracy": 1.0,
+  "macro_f1": 1.0,
+  "weighted_f1": 1.0,
+  "num_test_samples": 520
+}
