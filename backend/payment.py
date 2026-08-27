@@ -75,7 +75,6 @@ async def create_checkout_session(req: CheckoutRequest, current_user: dict = Dep
 
     # Real Stripe Implementation
     try:
-    try:
         with SessionLocal() as db:
             user = db.query(User).filter(User.username == username).first()
             if not user:

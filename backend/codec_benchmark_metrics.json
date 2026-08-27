@@ -1,0 +1,48 @@
+{
+  "timestamp": "2026-08-27 02:51:25",
+  "hardware": "Standard CPU (x86_64, AVX2/AVX-512)",
+  "static_mlp": {
+    "iterations": 500,
+    "avg_ms": 0.095,
+    "p50_ms": 0.083,
+    "p90_ms": 0.123,
+    "p95_ms": 0.143,
+    "p99_ms": 0.189,
+    "min_ms": 0.08,
+    "max_ms": 0.266,
+    "throughput_fps": 10578.9
+  },
+  "spatial_temporal_transformer": {
+    "iterations": 250,
+    "avg_ms": 0.857,
+    "p50_ms": 0.808,
+    "p90_ms": 1.048,
+    "p95_ms": 1.13,
+    "p99_ms": 1.463,
+    "min_ms": 0.71,
+    "max_ms": 1.754,
+    "throughput_fps": 1166.5
+  },
+  "sign_codec": {
+    "payload_size_bytes": 48,
+    "encode_p50_ms": 0.0382,
+    "encode_p99_ms": 0.1006,
+    "decode_p50_ms": 0.1932,
+    "decode_p99_ms": 0.4376,
+    "round_trip_avg_ms": 0.2655,
+    "compression_bandwidth": {
+      "fps": 30,
+      "sign_codec": {
+        "frame_size_bytes": 48,
+        "bandwidth_kbps": 11.52,
+        "wire_protocol": "Binary struct.pack over WebSockets / WebRTC DataChannel (UDP)"
+      },
+      "h264_video_baseline": {
+        "720p_kbps": 1500.0,
+        "1080p_kbps": 3000.0
+      },
+      "bandwidth_reduction_percentage": 99.23,
+      "cellular_compatibility": "2G / GPRS / EDGE / Satellite (Sub-5 kbps viable)"
+    }
+  }
+}

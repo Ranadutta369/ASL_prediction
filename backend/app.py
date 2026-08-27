@@ -501,3 +501,64 @@ def synthesize_sign(data: SynthesizePromptData, current_user: dict = Depends(get
     })
     response.headers["X-RateLimit-Remaining"] = str(new_remaining)
     return response
+
+
+# ──────────────────────────────────────────────
+# SignCodec: Ultra-Low-Bandwidth Neural Codec
+# ──────────────────────────────────────────────
+
+class CodecEncodeRequest(BaseModel):
+    keypoints: List[float]
+
+
+class CodecDecodeRequest(BaseModel):
+    payload_hex: str
+
+
+@app.post("/codec/encode")
+def codec_encode(data: CodecEncodeRequest, current_user: dict = Depends(get_current_user)):
+    """Compress 63 keypoints into a 48-byte continuous binary latent vector."""
+    from sign_codec import sign_codec
+    t0 = time.perf_counter()
+    payload = sign_codec.encode(data.keypoints)
+    latency_ms = (time.perf_counter() - t0) * 1000.0
+
+    return {
+        "payload_hex": payload.hex(),
+        "payload_size_bytes": len(payload),
+        "latency_ms": round(latency_ms, 3),
+        "wire_rate_kbps": 11.52,
+        "bandwidth_reduction_pct": 99.23,
+    }
+
+
+@app.post("/codec/decode")
+def codec_decode(data: CodecDecodeRequest, current_user: dict = Depends(get_current_user)):
+    """Decode a 48-byte hex payload back into 63 continuous landmark coordinates."""
+    from sign_codec import sign_codec
+    t0 = time.perf_counter()
+    try:
+        raw_bytes = bytes.fromhex(data.payload_hex)
+        reconstructed = sign_codec.decode(raw_bytes)
+        latency_ms = (time.perf_counter() - t0) * 1000.0
+        reconstructed["latency_ms"] = round(latency_ms, 3)
+        return reconstructed
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/codec/bandwidth-metrics")
+def codec_bandwidth():
+    """Return comparative bandwidth metrics vs H.264 video baselines."""
+    from sign_codec import sign_codec
+    return sign_codec.get_bandwidth_comparison(fps=30)
+
+
+@app.get("/codec/benchmarks")
+def codec_benchmarks():
+    """Return formal P50, P90, P99 CPU latency benchmarks."""
+    report_path = os.path.join(BASE_DIR, "codec_benchmark_metrics.json")
+    if os.path.exists(report_path):
+        with open(report_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {"status": "Run benchmark_latency.py to generate latest metrics"}
