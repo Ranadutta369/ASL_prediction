@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+onnxruntime
+numpy
+pydantic
+python-jose[cryptography]
+passlib
+python-multipart
+bcrypt
+stripe
+sqlalchemy
+python-dotenv
